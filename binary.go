@@ -2,24 +2,23 @@ package heap
 
 import "errors"
 
-// BinaryHeap implements a binary tree heap data structure
-type BinaryHeap struct {
+type binaryHeap struct {
 	items []int
 }
 
 // NewBinaryHeap ceates a new Heap with a binary impmentation
 func NewBinaryHeap() Heap {
-	return &BinaryHeap{}
+	return &binaryHeap{}
 }
 
 // Insert adds new items to the heap
-func (b *BinaryHeap) Insert(newb int) {
+func (b *binaryHeap) Insert(newb int) {
 	b.items = append(b.items, newb)
 	b.upHeap()
 }
 
 // Max removes and returns the highest valued item in the heap
-func (b *BinaryHeap) Max() (int, error) {
+func (b *binaryHeap) Max() (int, error) {
 	length := len(b.items)
 	if length < 1 {
 		return 0, errors.New("Heap has no items")
@@ -33,14 +32,14 @@ func (b *BinaryHeap) Max() (int, error) {
 }
 
 // Peek returns, but does not remove, the highest valued item in the heap
-func (b *BinaryHeap) Peek() (int, error) {
+func (b *binaryHeap) Peek() (int, error) {
 	if len(b.items) < 1 {
 		return 0, errors.New("Heap has no items")
 	}
 	return b.items[0], nil
 }
 
-func (b *BinaryHeap) upHeap() {
+func (b *binaryHeap) upHeap() {
 	i := len(b.items) - 1
 	for {
 		// fmt.Printf("^ Heap(%d): %+v\n", i, b.items)
@@ -63,11 +62,11 @@ func parentFor(i int) int {
 	return (i - 1) / 2
 }
 
-func (b *BinaryHeap) downHeap() {
+func (b *binaryHeap) downHeap() {
 	b.downHeapFrom(0)
 }
 
-func (b *BinaryHeap) downHeapFrom(i int) {
+func (b *binaryHeap) downHeapFrom(i int) {
 	// fmt.Printf("\\/Heap(%d): %+v\n", i, b.items)
 	for _, child := range childrenOf(i) {
 		if child < 0 || child >= len(b.items) {
