@@ -1,27 +1,37 @@
 package heap
 
-type binaryHeap struct {
+import "errors"
+
+type BinaryHeap struct {
 	items []int
 }
 
 // NewBinaryHeap ceates a new Heap with a binary impmentation
-func NewBinaryHeap() Heap {
-	return binaryHeap{}
+func NewBinaryHeap() BinaryHeap {
+	return BinaryHeap{}
 }
 
-func (b binaryHeap) Insert(new int) {
-	b.items = append(b.items, new)
+func (b *BinaryHeap) Insert(newb int) {
+	b.items = append(b.items, newb)
 	b.rebalance()
 }
 
-func (b binaryHeap) Max() int {
-	return 0
+func (b *BinaryHeap) Max() (int, error) {
+	if len(b.items) < 1 {
+		return 0, errors.New("Heap has no items")
+	}
+	max := b.items[0]
+	b.items = b.items[1:]
+	b.rebalance()
+	return max, nil
 }
 
-func (b binaryHeap) Peek() int {
-	return 0
+func (b BinaryHeap) Peek() (int, error) {
+	if len(b.items) < 1 {
+		return 0, errors.New("Heap has no items")
+	}
+	return b.items[0], nil
 }
 
-func (b binaryHeap) rebalance() {
-
+func (b *BinaryHeap) rebalance() {
 }
