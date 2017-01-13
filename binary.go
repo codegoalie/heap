@@ -15,17 +15,20 @@ func NewBinaryHeap() BinaryHeap {
 // Insert adds new items to the heap
 func (b *BinaryHeap) Insert(newb int) {
 	b.items = append(b.items, newb)
-	b.rebalance()
+	b.upHeap()
 }
 
 // Max removes and returns the highest valued item in the heap
 func (b *BinaryHeap) Max() (int, error) {
-	if len(b.items) < 1 {
+	length := len(b.items)
+	if length < 1 {
 		return 0, errors.New("Heap has no items")
 	}
 	max := b.items[0]
-	b.items = b.items[1:]
-	b.rebalance()
+
+	b.items[0] = b.items[length-1]
+	b.items = b.items[0 : length-1]
+	b.downHeap()
 	return max, nil
 }
 
@@ -37,9 +40,10 @@ func (b BinaryHeap) Peek() (int, error) {
 	return b.items[0], nil
 }
 
-func (b *BinaryHeap) rebalance() {
+func (b *BinaryHeap) upHeap() {
 	i := len(b.items) - 1
 	for {
+		// fmt.Printf("^ Heap(%d): %+v\n", i, b.items)
 		if i < 1 {
 			return
 		}
@@ -57,4 +61,33 @@ func parentFor(i int) int {
 		return (i / 2) - 1
 	}
 	return (i - 1) / 2
+}
+
+func (b *BinaryHeap) downHeap() {
+	b.downHeapFrom(0)
+}
+
+func (b *BinaryHeap) downHeapFrom(i int) {
+	// fmt.Printf("\\/Heap(%d): %+v\n", i, b.items)
+	for _, child := range childrenOf(i) {
+		if child < 0 || child >= len(b.items) {
+			continue
+		}
+		if b.items[child] > b.items[i] {
+			b.items[i], b.items[child] = b.items[child], b.items[i]
+			b.downHeapFrom(child)
+		}
+	}
+}
+
+func childrenOf(i int) [2]int {
+	if i == 0 {
+		return [2]int{1, 2}
+	}
+	a := (i + 1) * 2
+	b := 2*i + 1
+	if i%2 == 0 {
+		return [2]int{b, a}
+	}
+	return [2]int{a, b}
 }

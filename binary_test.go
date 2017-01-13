@@ -78,11 +78,35 @@ func TextMaxForTwenty(t *testing.T) {
 
 func TestMaxRemoves(t *testing.T) {
 	heap := NewBinaryHeap()
-	highest := 4
-	next := 3
+	highest := 8
+	next := 7
+	third := 6
 	heap.Insert(2)
-	heap.Insert(next)
-	heap.Insert(highest)
+	heap.Insert(3)
+	heap.Insert(4)
+	heap.Insert(5)
+	heap.Insert(third)   // 6
+	heap.Insert(next)    // 7
+	heap.Insert(highest) // 8
+
+	// 2
+	// 2 3
+	// 3 2
+	// 3 2 4
+	// 4 2 3
+	// 4 2 3 5
+	// 4 5 3 2
+	// 5 4 3 2
+	// 5 4 3 2 6
+	// 5 6 3 2 4
+	// 6 5 3 2 4
+	// 6 5 3 2 4 7
+	// 6 5 7 2 4 3
+	// 7 5 6 2 4 3
+	// 7 5 6 2 4 3 8
+	// 7 5 8 2 4 3 6
+	// 8 5 7 2 4 3 6
+	// 6 5 7 2 4 3
 
 	max, err := heap.Max()
 
@@ -94,12 +118,19 @@ func TestMaxRemoves(t *testing.T) {
 	}
 
 	nextMax, err := heap.Max()
-
 	if err != nil {
-		t.Errorf("heap.Max() raised %s; expected no error", err.Error())
+		t.Errorf("2nd heap.Max() raised %s; expected no error", err.Error())
 	}
 	if nextMax != next {
-		t.Errorf("heap.Max() == %d; expected %d", nextMax, next)
+		t.Errorf("2nd heap.Max() == %d; expected %d", nextMax, next)
+	}
+
+	thirdMax, err := heap.Max()
+	if err != nil {
+		t.Errorf("3nd heap.Max() raised %s; expected no error", err.Error())
+	}
+	if thirdMax != third {
+		t.Errorf("3nd heap.Max() == %d; expected %d", thirdMax, third)
 	}
 }
 
