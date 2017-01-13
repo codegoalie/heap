@@ -2,7 +2,7 @@ package heap
 
 import "testing"
 
-func TestEmptyMax(t *testing.T) {
+func TestBinaryEmptyMax(t *testing.T) {
 	heap := NewBinaryHeap()
 	_, err := heap.Max()
 	if err == nil {
@@ -10,7 +10,7 @@ func TestEmptyMax(t *testing.T) {
 	}
 }
 
-func TestMaxForOne(t *testing.T) {
+func TestBinaryMaxForOne(t *testing.T) {
 	heap := NewBinaryHeap()
 	expected := 4
 	heap.Insert(expected)
@@ -25,7 +25,7 @@ func TestMaxForOne(t *testing.T) {
 	}
 }
 
-func TestMaxForTwo(t *testing.T) {
+func TestBinaryMaxForTwo(t *testing.T) {
 	heap := NewBinaryHeap()
 	expected := 4
 	heap.Insert(3)
@@ -41,7 +41,7 @@ func TestMaxForTwo(t *testing.T) {
 	}
 }
 
-func TestMaxForThree(t *testing.T) {
+func TestBinaryMaxForThree(t *testing.T) {
 	heap := NewBinaryHeap()
 	expected := 4
 	heap.Insert(3)
@@ -58,7 +58,7 @@ func TestMaxForThree(t *testing.T) {
 	}
 }
 
-func TextMaxForTwenty(t *testing.T) {
+func TestBinaryMaxForTwenty(t *testing.T) {
 	heap := NewBinaryHeap()
 	for i := 1; i < 21; i++ {
 		heap.Insert(i)
@@ -76,7 +76,7 @@ func TextMaxForTwenty(t *testing.T) {
 	}
 }
 
-func TestMaxRemoves(t *testing.T) {
+func TestBinaryMaxRemoves(t *testing.T) {
 	heap := NewBinaryHeap()
 	highest := 8
 	next := 7
@@ -134,7 +134,7 @@ func TestMaxRemoves(t *testing.T) {
 	}
 }
 
-func TestPeekNoRemove(t *testing.T) {
+func TestBinaryPeekNoRemove(t *testing.T) {
 	heap := NewBinaryHeap()
 	highest := 4
 	heap.Insert(2)
@@ -160,7 +160,7 @@ func TestPeekNoRemove(t *testing.T) {
 	}
 }
 
-func TestParentFor(t *testing.T) {
+func TestBinaryParentFor(t *testing.T) {
 	cases := map[int]int{
 		1:  0,
 		2:  0,
