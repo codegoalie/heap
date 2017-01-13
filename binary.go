@@ -8,8 +8,8 @@ type BinaryHeap struct {
 }
 
 // NewBinaryHeap ceates a new Heap with a binary impmentation
-func NewBinaryHeap() BinaryHeap {
-	return BinaryHeap{}
+func NewBinaryHeap() Heap {
+	return &BinaryHeap{}
 }
 
 // Insert adds new items to the heap
@@ -33,7 +33,7 @@ func (b *BinaryHeap) Max() (int, error) {
 }
 
 // Peek returns, but does not remove, the highest valued item in the heap
-func (b BinaryHeap) Peek() (int, error) {
+func (b *BinaryHeap) Peek() (int, error) {
 	if len(b.items) < 1 {
 		return 0, errors.New("Heap has no items")
 	}
