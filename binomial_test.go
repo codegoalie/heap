@@ -1,6 +1,11 @@
 package heap
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+
+	"github.com/davecgh/go-spew/spew"
+)
 
 func TestBinomialEmptyMax(t *testing.T) {
 	heap := NewBinomialHeap()
@@ -28,8 +33,10 @@ func TestBinomialMaxForOne(t *testing.T) {
 func TestBinomialMaxForTwo(t *testing.T) {
 	heap := NewBinomialHeap()
 	expected := 4
-	heap.Insert(3)
 	heap.Insert(expected)
+	spew.Dump("Insert 4: %+v\n", heap)
+	heap.Insert(3)
+	spew.Dump("Insert 3: %+v\n", heap)
 
 	max, err := heap.Max()
 
@@ -45,8 +52,10 @@ func TestBinomialMaxForThree(t *testing.T) {
 	heap := NewBinomialHeap()
 	expected := 4
 	heap.Insert(3)
-	heap.Insert(1)
 	heap.Insert(expected)
+	heap.Insert(1)
+	fmt.Println("\npost-inserts")
+	spew.Dump(heap)
 
 	max, err := heap.Max()
 
@@ -81,13 +90,13 @@ func TestBinomialMaxRemoves(t *testing.T) {
 	highest := 8
 	next := 7
 	third := 6
+	heap.Insert(third) // 6
 	heap.Insert(2)
 	heap.Insert(3)
-	heap.Insert(4)
-	heap.Insert(5)
-	heap.Insert(third)   // 6
 	heap.Insert(next)    // 7
 	heap.Insert(highest) // 8
+	heap.Insert(4)
+	heap.Insert(5)
 
 	max, err := heap.Max()
 
@@ -138,5 +147,41 @@ func TestBinomialPeekNoRemove(t *testing.T) {
 	}
 	if nextPeek != highest {
 		t.Errorf("heap.Max() == %d; expected %d", nextPeek, highest)
+	}
+}
+
+func TestBinomialMergeZeroEmpty(t *testing.T) {
+	expectedValue := 4
+	one := binomialHeap{firstRoot: &root{node: &node{value: expectedValue}}}
+	zero := binomialHeap{}
+	merged := merge(one, zero)
+	if merged.firstRoot == nil {
+		t.Error("Expected merge of zero and empty heaps to have one root, but none")
+	} else {
+		if merged.firstRoot.next != nil {
+			t.Error("Expected merge of zero and empty heaps to have one root, but has more")
+		}
+
+		if merged.firstRoot.node.value != expectedValue {
+			t.Errorf("Expected merge of zero and empty heaps to have value of %d, but is %d", expectedValue, merged.firstRoot.node.value)
+		}
+	}
+}
+
+func TestBinomialMergeEmptyZero(t *testing.T) {
+	expectedValue := 4
+	one := binomialHeap{firstRoot: &root{node: &node{value: expectedValue}}}
+	zero := binomialHeap{}
+	merged := merge(zero, one)
+	if merged.firstRoot == nil {
+		t.Error("Expected merge of zero and empty heaps to have one root, but none")
+	} else {
+		if merged.firstRoot.next != nil {
+			t.Error("Expected merge of zero and empty heaps to have one root, but has more")
+		}
+
+		if merged.firstRoot.node.value != expectedValue {
+			t.Errorf("Expected merge of zero and empty heaps to have value of %d, but is %d", expectedValue, merged.firstRoot.node.value)
+		}
 	}
 }
