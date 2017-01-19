@@ -148,3 +148,19 @@ func merge(rhs, lhs binomialHeap) *binomialHeap {
 	spew.Dump(merged)
 	return &merged
 }
+
+func mergeTrees(first, second node) (*node, error) {
+	if first.order != second.order {
+		return &node{}, fmt.Errorf("Trees must have the same order to be merged. %v != %v", first, second)
+	}
+
+	merged := node{order: first.order + 1}
+	if first.value > second.value {
+		merged.value = first.value
+		merged.children = []*node{&second}
+	} else {
+		merged.value = second.value
+		merged.children = []*node{&first}
+	}
+	return &merged, nil
+}

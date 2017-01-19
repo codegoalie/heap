@@ -7,6 +7,80 @@ import (
 	"github.com/davecgh/go-spew/spew"
 )
 
+func TestBinomialTreeMergeTwoZeros(t *testing.T) {
+	highestValue := 6
+	first := node{value: 4, order: 0}
+	second := node{value: highestValue, order: 0}
+	merged, err := mergeTrees(first, second)
+	if err != nil {
+		t.Errorf("mergeTrees(%v, %v) raised %s, but shouldn't", first, second, err.Error())
+	}
+
+	if merged.order != 1 {
+		t.Errorf("mergeTrees(%v, %v) should have order of 1, but has %d", first, second, merged.order)
+	}
+
+	if merged.value != highestValue {
+		t.Errorf("mergeTrees(%v, %v) should have value of %d, but has %d", first, second, merged.value, highestValue)
+	}
+}
+
+func TestBinomialTreeMergeMismatch(t *testing.T) {
+	first := node{value: 4, order: 0}
+	second := node{value: 5, order: 1, children: []*node{{value: 3}}}
+	merged, err := mergeTrees(first, second)
+	if err == nil {
+		t.Errorf("mergeTrees(%v, %v) should have returned an error, but didn't", first, second)
+	}
+
+	if merged.order != 0 {
+		t.Errorf("mergeTrees(%v, %v) should have a zero-value order, but has %d", first, second, merged.order)
+	}
+
+	if merged.value != 0 {
+		t.Errorf("mergeTrees(%v, %v) should have zero-value value, but has %d", first, second, merged.value)
+	}
+}
+
+func TestBinomialTreeMergeTwoThrees(t *testing.T) {
+	first := node{value: 66,
+		order: 3,
+		children: []*node{
+			{value: 46,
+				order: 2,
+				children: []*node{
+					{value: 33, order: 1, children: []*node{{value: 7}}},
+					{value: 45, order: 0},
+				}},
+			{value: 43, order: 1, children: []*node{{value: 24}}},
+			{value: 35},
+		}}
+	second := node{value: 78,
+		order: 3,
+		children: []*node{
+			{value: 74,
+				order: 2,
+				children: []*node{
+					{value: 33, order: 1, children: []*node{{value: 12}}},
+					{value: 54, order: 0},
+				}},
+			{value: 43, order: 1, children: []*node{{value: 24}}},
+			{value: 35},
+		}}
+	merged, err := mergeTrees(first, second)
+	if err == nil {
+		t.Errorf("mergeTrees(%v, %v) should have returned an error, but didn't", first, second)
+	}
+
+	if merged.order != 0 {
+		t.Errorf("mergeTrees(%v, %v) should have a zero-value order, but has %d", first, second, merged.order)
+	}
+
+	if merged.value != 0 {
+		t.Errorf("mergeTrees(%v, %v) should have zero-value value, but has %d", first, second, merged.value)
+	}
+}
+
 func TestBinomialEmptyMax(t *testing.T) {
 	heap := NewBinomialHeap()
 	_, err := heap.Max()
