@@ -79,13 +79,11 @@ func merge(rhs, lhs binomialHeap) *binomialHeap {
 		return &merged
 	}
 
+	next := &root{}
 	cur := &root{}
 	merged.firstRoot = cur
 
 	for {
-		if rhr == nil && lhr == nil {
-			break
-		}
 		fmt.Println("\nIteration")
 		fmt.Println("cur")
 		spew.Dump(cur)
@@ -98,51 +96,49 @@ func merge(rhs, lhs binomialHeap) *binomialHeap {
 
 		if rhr == nil {
 			fmt.Println("No rhr, Keep lhn")
-			cur = lhr
+			next.node = lhr.node
 			lhr = lhr.next
-			cur = cur.next
-			if rhr == nil && lhr == nil {
-				break
-			}
-			continue
-		}
-		if lhr == nil {
+		} else if lhr == nil {
 			fmt.Println("No lhr, Keep rhn")
-			cur = rhr
-			rhr = rhr.next
-			cur = cur.next
-			if rhr == nil && lhr == nil {
-				break
-			}
-			continue
-		}
-
-		rhn := rhr.node
-		lhn := lhr.node
-
-		if rhn.order == lhn.order {
-			fmt.Println("Order equal")
-			var carry *node
-			if rhn.value > lhn.value {
-				carry = &node{order: rhn.order + 1, children: append(rhn.children, lhn), value: rhn.value}
-			} else {
-				carry = &node{order: lhn.order + 1, children: append(lhn.children, rhn), value: lhn.value}
-			}
-			cur = &root{node: carry}
-			rhr = rhr.next
-			lhr = lhr.next
-		} else if rhn.order < lhn.order {
-			fmt.Println("Keep rhn")
-			cur = &root{node: rhn}
+			next.node = rhr.node
 			rhr = rhr.next
 		} else {
-			fmt.Println("Keep lhn")
-			cur = &root{node: lhn}
-			lhr = lhr.next
+			rhn := rhr.node
+			lhn := lhr.node
+
+			if rhn.order == lhn.order {
+				fmt.Println("Order equal")
+				merged, _ := mergeTrees(*rhn, *lhn)
+				next.node = merged
+				rhr = rhr.next
+				lhr = lhr.next
+			} else if rhn.order < lhn.order {
+				fmt.Println("Keep rhn")
+				next.node = rhn
+				rhr = rhr.next
+			} else {
+				fmt.Println("Keep lhn")
+				next.node = lhn
+				lhr = lhr.next
+			}
 		}
 
-		cur = cur.next
+		if merged.firstRoot.node == nil {
+			merged.firstRoot = next
+		} else {
+			cur.next = next
+		}
+
+		if rhr == nil && lhr == nil {
+			break
+		}
+
+		cur = next
+		next = &root{}
+
 	}
+	fmt.Println("last cur")
+	spew.Dump(cur)
 
 	fmt.Println("final merged")
 	spew.Dump(merged)
