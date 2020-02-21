@@ -1,6 +1,8 @@
 package heap
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestBinaryEmptyMax(t *testing.T) {
 	heap := NewBinaryHeap()

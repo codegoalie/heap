@@ -29,8 +29,9 @@ func NewBinomialHeap() Heap {
 }
 
 func (h *binomialHeap) Insert(i int) {
-	lhs := binomialHeap{firstRoot: &root{node: &node{value: i}}}
-	h.firstRoot = merge(*h, lhs).firstRoot
+	newFirst := &root{node: &node{value: i}, next: h.firstRoot}
+	h.firstRoot = newFirst
+	h.combine()
 }
 
 func (h *binomialHeap) Max() (int, error) {
@@ -75,68 +76,29 @@ func (h *binomialHeap) findMax() (*node, error) {
 	return max, nil
 }
 
-func merge(rhs, lhs binomialHeap) *binomialHeap {
-	merged := binomialHeap{}
-
-	rhr := rhs.firstRoot
-	lhr := lhs.firstRoot
-
-	if rhr == nil {
-		return &lhs
-	}
-	if lhr == nil {
-		return &rhs
-	}
-	if rhr == nil && lhr == nil {
-		return &merged
-	}
-
-	next := &root{}
-	cur := &root{}
-	merged.firstRoot = cur
-
+func (h *binomialHeap) combine() {
+	curRoot := h.firstRoot
 	for {
-
-		if rhr == nil {
-			next.node = lhr.node
-			lhr = lhr.next
-		} else if lhr == nil {
-			next.node = rhr.node
-			rhr = rhr.next
-		} else {
-			rhn := rhr.node
-			lhn := lhr.node
-
-			if rhn.order() == lhn.order() {
-				merged, _ := mergeTrees(rhn, lhn)
-				next.node = merged
-				rhr = rhr.next
-				lhr = lhr.next
-			} else if rhn.order() < lhn.order() {
-				next.node = rhn
-				rhr = rhr.next
-			} else {
-				next.node = lhn
-				lhr = lhr.next
-			}
+		if curRoot == nil || curRoot.next == nil {
+			return
 		}
 
-		if merged.firstRoot.node == nil {
-			merged.firstRoot = next
-		} else {
-			cur.next = next
+		if curRoot.node.order() != curRoot.next.node.order() {
+			curRoot = curRoot.next
+			continue
 		}
 
-		if rhr == nil && lhr == nil {
-			break
+		newNode, err := mergeTrees(curRoot.node, curRoot.next.node)
+		if err != nil {
+			err = fmt.Errorf("failed to combine same order roots: %w", err)
+			fmt.Println(err)
+			return
 		}
 
-		cur = next
-		next = &root{}
-
+		curRoot.node = newNode
+		curRoot.next = curRoot.next.next
+		curRoot = curRoot.next
 	}
-
-	return &merged
 }
 
 func mergeTrees(first, second *node) (*node, error) {
