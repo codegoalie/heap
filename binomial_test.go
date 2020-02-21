@@ -1,10 +1,7 @@
 package heap
 
 import (
-	"fmt"
 	"testing"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 func TestBinomialTreeMergeTwoZeros(t *testing.T) {
@@ -87,9 +84,10 @@ func TestBinomialMaxForTwo(t *testing.T) {
 	heap := NewBinomialHeap()
 	expected := 4
 	heap.Insert(expected)
-	// spew.Dump("Insert 4: %+v\n", heap)
 	heap.Insert(3)
-	// spew.Dump("Insert 3: %+v\n", heap)
+	heap.Insert(7)
+	heap.Insert(2)
+	heap.Insert(6)
 
 	max, err := heap.Max()
 
@@ -107,8 +105,6 @@ func TestBinomialMaxForThree(t *testing.T) {
 	heap.Insert(3)
 	heap.Insert(expected)
 	heap.Insert(1)
-	fmt.Println("\npost-inserts")
-	spew.Dump(heap)
 
 	max, err := heap.Max()
 

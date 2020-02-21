@@ -3,8 +3,6 @@ package heap
 import (
 	"errors"
 	"fmt"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 type root struct {
@@ -29,8 +27,6 @@ func NewBinomialHeap() Heap {
 
 func (h *binomialHeap) Insert(i int) {
 	lhs := binomialHeap{firstRoot: &root{node: &node{value: i}}}
-	fmt.Printf("Insert(%d)\n", i)
-
 	h.firstRoot = merge(*h, lhs).firstRoot
 }
 
@@ -97,22 +93,11 @@ func merge(rhs, lhs binomialHeap) *binomialHeap {
 	merged.firstRoot = cur
 
 	for {
-		fmt.Println("\nIteration")
-		fmt.Println("cur")
-		spew.Dump(cur)
-		fmt.Println("rhr")
-		spew.Dump(rhr)
-		fmt.Println("lhr")
-		spew.Dump(lhr)
-		fmt.Println("merged")
-		spew.Dump(merged)
 
 		if rhr == nil {
-			fmt.Println("No rhr, Keep lhn")
 			next.node = lhr.node
 			lhr = lhr.next
 		} else if lhr == nil {
-			fmt.Println("No lhr, Keep rhn")
 			next.node = rhr.node
 			rhr = rhr.next
 		} else {
@@ -120,17 +105,14 @@ func merge(rhs, lhs binomialHeap) *binomialHeap {
 			lhn := lhr.node
 
 			if rhn.order == lhn.order {
-				fmt.Println("Order equal")
 				merged, _ := mergeTrees(*rhn, *lhn)
 				next.node = merged
 				rhr = rhr.next
 				lhr = lhr.next
 			} else if rhn.order < lhn.order {
-				fmt.Println("Keep rhn")
 				next.node = rhn
 				rhr = rhr.next
 			} else {
-				fmt.Println("Keep lhn")
 				next.node = lhn
 				lhr = lhr.next
 			}
@@ -150,11 +132,7 @@ func merge(rhs, lhs binomialHeap) *binomialHeap {
 		next = &root{}
 
 	}
-	fmt.Println("last cur")
-	spew.Dump(cur)
 
-	fmt.Println("final merged")
-	spew.Dump(merged)
 	return &merged
 }
 
