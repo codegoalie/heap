@@ -12,8 +12,11 @@ type root struct {
 
 type node struct {
 	value    int
-	order    int
 	children []*node
+}
+
+func (n *node) order() int {
+	return len(n.children)
 }
 
 type binomialHeap struct {
@@ -104,12 +107,12 @@ func merge(rhs, lhs binomialHeap) *binomialHeap {
 			rhn := rhr.node
 			lhn := lhr.node
 
-			if rhn.order == lhn.order {
-				merged, _ := mergeTrees(*rhn, *lhn)
+			if rhn.order() == lhn.order() {
+				merged, _ := mergeTrees(rhn, lhn)
 				next.node = merged
 				rhr = rhr.next
 				lhr = lhr.next
-			} else if rhn.order < lhn.order {
+			} else if rhn.order() < lhn.order() {
 				next.node = rhn
 				rhr = rhr.next
 			} else {
@@ -136,18 +139,16 @@ func merge(rhs, lhs binomialHeap) *binomialHeap {
 	return &merged
 }
 
-func mergeTrees(first, second node) (*node, error) {
-	if first.order != second.order {
+func mergeTrees(first, second *node) (*node, error) {
+	if first.order() != second.order() {
 		return &node{}, fmt.Errorf("Trees must have the same order to be merged. %v != %v", first, second)
 	}
 
-	merged := node{order: first.order + 1}
 	if first.value > second.value {
-		merged.value = first.value
-		merged.children = []*node{&second}
-	} else {
-		merged.value = second.value
-		merged.children = []*node{&first}
+		first.children = append(first.children, second)
+		return first, nil
 	}
-	return &merged, nil
+
+	second.children = append(second.children, first)
+	return second, nil
 }

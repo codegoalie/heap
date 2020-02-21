@@ -6,15 +6,15 @@ import (
 
 func TestBinomialTreeMergeTwoZeros(t *testing.T) {
 	highestValue := 6
-	first := node{value: 4, order: 0}
-	second := node{value: highestValue, order: 0}
+	first := &node{value: 4}
+	second := &node{value: highestValue}
 	merged, err := mergeTrees(first, second)
 	if err != nil {
 		t.Errorf("mergeTrees(%v, %v) raised %s, but shouldn't", first, second, err.Error())
 	}
 
-	if merged.order != 1 {
-		t.Errorf("mergeTrees(%v, %v) should have order of 1, but has %d", first, second, merged.order)
+	if merged.order() != 1 {
+		t.Errorf("mergeTrees(%v, %v) should have order of 1, but has %d", first, second, merged.order())
 	}
 
 	if merged.value != highestValue {
@@ -24,15 +24,15 @@ func TestBinomialTreeMergeTwoZeros(t *testing.T) {
 
 func TestBinomialTreeMergeTwoOnes(t *testing.T) {
 	highestValue := 6
-	first := node{value: highestValue, order: 1, children: []*node{{value: 2}}}
-	second := node{value: 4, order: 1, children: []*node{{value: 3}}}
+	first := &node{value: highestValue, children: []*node{{value: 2}}}
+	second := &node{value: 4, children: []*node{{value: 3}}}
 	merged, err := mergeTrees(first, second)
 	if err != nil {
 		t.Errorf("mergeTrees(%v, %v) raised %s, but shouldn't", first, second, err.Error())
 	}
 
-	if merged.order != 2 {
-		t.Errorf("mergeTrees(%v, %v) should have order of 1, but has %d", first, second, merged.order)
+	if merged.order() != 2 {
+		t.Errorf("mergeTrees(%v, %v) should have order of 1, but has %d", first, second, merged.order())
 	}
 
 	if merged.value != highestValue {
@@ -41,15 +41,15 @@ func TestBinomialTreeMergeTwoOnes(t *testing.T) {
 }
 
 func TestBinomialTreeMergeMismatch(t *testing.T) {
-	first := node{value: 4, order: 0}
-	second := node{value: 5, order: 1, children: []*node{{value: 3}}}
+	first := &node{value: 4}
+	second := &node{value: 5, children: []*node{{value: 3}}}
 	merged, err := mergeTrees(first, second)
 	if err == nil {
 		t.Errorf("mergeTrees(%v, %v) should have returned an error, but didn't", first, second)
 	}
 
-	if merged.order != 0 {
-		t.Errorf("mergeTrees(%v, %v) should have a zero-value order, but has %d", first, second, merged.order)
+	if merged.order() != 0 {
+		t.Errorf("mergeTrees(%v, %v) should have a zero-value order, but has %d", first, second, merged.order())
 	}
 
 	if merged.value != 0 {
