@@ -40,7 +40,7 @@ func (h *binomialHeap) Max() (int, error) {
 		return 0, err
 	}
 
-	return max.value, nil
+	return max.node.value, nil
 }
 
 func (h *binomialHeap) Peek() (int, error) {
@@ -48,10 +48,10 @@ func (h *binomialHeap) Peek() (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	return max.value, nil
+	return max.node.value, nil
 }
 
-func (h *binomialHeap) findMax() (*node, error) {
+func (h *binomialHeap) findMax() (*root, error) {
 	if h.firstRoot == nil {
 		return nil, errors.New("Heap has no items")
 	}
@@ -60,7 +60,7 @@ func (h *binomialHeap) findMax() (*node, error) {
 	if cur.node == nil {
 		return nil, errors.New("Heap's first root has no node")
 	}
-	max := cur.node
+	max := cur
 
 	for {
 		if cur.next == nil {
@@ -68,8 +68,8 @@ func (h *binomialHeap) findMax() (*node, error) {
 		}
 
 		cur = cur.next
-		if max.value < cur.node.value {
-			max = cur.node
+		if max.node.value < cur.node.value {
+			max = cur
 		}
 	}
 
