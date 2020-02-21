@@ -6,8 +6,9 @@ import (
 )
 
 type root struct {
-	node *node
-	next *root
+	node     *node
+	next     *root
+	previous *root
 }
 
 type node struct {
@@ -30,6 +31,10 @@ func NewBinomialHeap() Heap {
 
 func (h *binomialHeap) Insert(i int) {
 	newFirst := &root{node: &node{value: i}, next: h.firstRoot}
+	if h.firstRoot != nil {
+		h.firstRoot.previous = newFirst
+	}
+	newFirst.next = h.firstRoot
 	h.firstRoot = newFirst
 	h.combine()
 }
@@ -40,7 +45,23 @@ func (h *binomialHeap) Max() (int, error) {
 		return 0, err
 	}
 
-	return max.node.value, nil
+	maxValue := max.node.value
+	if max.previous != nil {
+		max.previous.next = max.next
+	} else {
+		h.firstRoot = max.next
+	}
+
+	if max.next != nil {
+		max.next.previous = max.previous
+	}
+
+	for _, tree := range max.node.children {
+		newRoot := &root{node: tree}
+		h.insertRoot(newRoot)
+	}
+
+	return maxValue, nil
 }
 
 func (h *binomialHeap) Peek() (int, error) {
@@ -49,6 +70,39 @@ func (h *binomialHeap) Peek() (int, error) {
 		return 0, err
 	}
 	return max.node.value, nil
+}
+
+func (h *binomialHeap) insertRoot(newRoot *root) {
+	curRoot := h.firstRoot
+	if curRoot == nil {
+		h.firstRoot = newRoot
+		return
+	}
+
+	newOrder := newRoot.node.order()
+
+	for {
+		if newOrder <= curRoot.node.order() {
+			newRoot.next = curRoot
+			if curRoot.previous != nil {
+				curRoot.previous.next = newRoot
+				newRoot.previous = curRoot.previous
+			} else {
+				h.firstRoot = newRoot
+			}
+			curRoot.previous = newRoot
+
+			break
+		}
+
+		if curRoot.next == nil {
+			newRoot.previous = curRoot
+			curRoot.next = newRoot
+			break
+		}
+		curRoot = curRoot.next
+	}
+	h.combine()
 }
 
 func (h *binomialHeap) findMax() (*root, error) {
@@ -96,8 +150,11 @@ func (h *binomialHeap) combine() {
 		}
 
 		curRoot.node = newNode
-		curRoot.next = curRoot.next.next
-		curRoot = curRoot.next
+		nextNext := curRoot.next.next
+		curRoot.next = nextNext
+		if nextNext != nil {
+			nextNext.previous = curRoot
+		}
 	}
 }
 
